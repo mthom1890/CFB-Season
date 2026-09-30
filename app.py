@@ -1,6 +1,6 @@
 """
 ===============================================================================
- PROMPTING IMPACT / READING BIG DATA AT THE HUMAN SCALE  (IARC 425)
+ PROMPTING IMPACT / READING BIG DATA AT THE HUMAN SCALE  (ARCH 425)
  Exhibition Template - Python Backend
 ===============================================================================
 
@@ -766,6 +766,7 @@ class ApiPool:
         self.t0 = time.time()
         self.games = {}
         self.playback_mode = "latest"
+        self.replay_paused = False
         self.replay_index = 0
         self.replay_started = time.monotonic()
         self.replay_seconds = 12
@@ -816,7 +817,7 @@ class ApiPool:
             index = min(self.replay_index, max(0, len(weeks)-1))
             return {"mode": self.playback_mode, "season": SEASON, "teams": list(TEAMS),
                     "week": weeks[index] if weeks and self.playback_mode == "replay" else None,
-                    "weeks": weeks, "interval": self.replay_seconds,
+                    "weeks": weeks, "interval": self.replay_seconds, "paused": self.replay_paused,
                     "games": {team: self.selected_game(team, weeks, index) for team in TEAMS}}
 
     def selected_game(self, team, weeks, index):
@@ -835,7 +836,7 @@ class ApiPool:
     def publish_games(self):
         with self.lock:
             weeks = sorted({int(g["week"]) for games in self.games.values() for g in games})
-            if self.playback_mode == "replay" and weeks:
+            if self.playback_mode == "replay" and weeks and not self.replay_paused:
                 elapsed = time.monotonic() - self.replay_started
                 if elapsed >= self.replay_seconds:
                     self.replay_index = (self.replay_index + int(elapsed // self.replay_seconds)) % len(weeks)
@@ -1306,7 +1307,7 @@ class Gallery:
 # FLASK APP
 # =============================================================================
 
-app = Flask(__name__, static_folder=None)
+app = Flask(__name__, static_folder=os.path.join(HERE, "static"), static_url_path="/static")
 apis = ApiPool(API_REGISTRY)
 gallery = Gallery(apis)
 
@@ -1357,13 +1358,28 @@ runtime_status = {"ready": False, "error": None}
 @app.post("/api/playback")
 def api_playback():
     body = request.get_json(force=True)
-    mode = body.get("mode", "latest")
-    if mode not in ("latest", "replay"):
-        return jsonify({"error": "invalid mode"}), 400
+    mode = body.get("mode", "replay")
+    action = body.get("action", "restart")
+    if mode not in ("latest", "replay") or action not in ("restart", "resume", "select", "pause"):
+        return jsonify({"error": "invalid playback request"}), 400
     with apis.lock:
+        weeks = sorted({int(g["week"]) for games in apis.games.values() for g in games})
+        if action == "select":
+            week = body.get("week")
+            if isinstance(week, bool) or not isinstance(week, int) or week not in weeks:
+                return jsonify({"error": "choose an available completed week"}), 400
+            apis.replay_index = weeks.index(week)
+            apis.replay_paused = True
+        elif action == "restart":
+            apis.replay_index = 0
+            apis.replay_paused = False
+        elif action == "resume":
+            apis.replay_paused = False
+        elif action == "pause":
+            apis.replay_paused = True
         apis.playback_mode = mode
-        apis.replay_index = 0
         apis.replay_started = time.monotonic()
+
     apis.publish_games()
     return jsonify(apis.playback())
 
@@ -1528,7 +1544,7 @@ def warm_up():
 
 def main():
     print("=" * 70)
-    print(" IARC 425  Exhibition Template  -  Python backend")
+    print(" ARCH 425  Exhibition Template  -  Python backend")
     print("=" * 70)
     print(" grid          %d x %d cells at %.3f m" % (NXI, NYI, DX))
     print(" room          %.1f x %.1f x %.1f m, 6 zones" % (ROOM_W, ROOM_D, ROOM_H))
