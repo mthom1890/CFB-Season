@@ -321,6 +321,39 @@ th{background:var(--surface-2);color:var(--ink-2)}
 .statement{border-top:4px solid var(--accent);background:var(--surface-2)}
 .statement p{font-size:15px;line-height:1.75}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+/* School-color accents and architectural graphics. */
+:root{--tennessee:#ff8200;--georgia:#e32636;--alabama:#c72b48}
+[data-team="1"]{--team-accent:var(--tennessee)}
+[data-team="2"]{--team-accent:var(--georgia)}
+[data-team="3"]{--team-accent:var(--alabama)}
+.teamBadge{display:inline-flex;color:var(--team-accent);width:72px;flex-shrink:0;align-items:center}
+.teamBadge svg{width:100%;height:auto;display:block}
+.teamBadge.mini{width:30px;vertical-align:middle;margin-right:7px}
+.boardIdentity{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.boardTeam{border-top:4px solid var(--team-accent)}
+.boardTeamName strong{display:block;font-family:Impact,"Arial Narrow",Arial,sans-serif;font-size:25px;letter-spacing:.03em;margin-top:4px}
+.mappingCard{border-top-color:var(--team-accent)}
+.mappingCard .eyebrow{color:var(--team-accent);padding-right:25px}
+.cardTeamBadge{position:absolute;right:8px;top:35px;opacity:.9}
+.teamReadout{border-left:3px solid var(--team-accent);padding-left:6px;margin-top:8px;line-height:1.8}
+.ticketSection{position:relative;border-left:5px solid var(--accent);border-right:5px dotted var(--rule-2)}
+.ticketSection h2{max-width:80%}
+.teamField{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:2px solid var(--ink-3);margin-top:20px;
+ background:repeating-linear-gradient(0deg,transparent 0 29px,rgba(255,255,255,.06) 29px 30px)}
+.fieldBay{position:relative;padding:24px 12px;text-align:center;border-right:2px dashed var(--ink-3);border-top:5px solid var(--team-accent);overflow:hidden}
+.fieldBay:last-child{border-right:0}
+.fieldSectionNumber{display:block;font-family:Impact,Arial,sans-serif;font-size:72px;line-height:1;color:var(--team-accent);opacity:.85}
+.fieldBay strong{display:block;font-size:18px;font-weight:900;letter-spacing:.08em;margin-top:8px}
+.fieldBay>span:last-of-type{display:block;font-size:9px;letter-spacing:.08em;margin-top:6px}
+.lightPair{font-size:10px;background:var(--nav);padding:10px;margin-top:16px;border:1px solid var(--rule)}
+.lightPair b{padding:0 7px;color:var(--team-accent)}
+.stadiumDivider{display:flex;justify-content:space-around;gap:15px;padding:20px 15px;margin:0 0 14px;
+ background:var(--nav);border-top:1px dashed var(--rule-2);border-bottom:1px dashed var(--rule-2);font-size:11px;font-weight:900;letter-spacing:.15em}
+.statement{position:relative;overflow:hidden;padding:32px;border-right:6px solid var(--accent)}
+.statement:after{content:"425";position:absolute;right:-10px;bottom:-35px;font-family:Impact,Arial,sans-serif;
+ font-size:clamp(100px,18vw,250px);color:var(--rule);opacity:.25;pointer-events:none}
+.statement>*{position:relative;z-index:1}
+@media(max-width:700px){.teamField{grid-template-columns:1fr}.fieldBay{border-right:0;border-bottom:2px dashed var(--ink-3)}.stadiumDivider{flex-wrap:wrap}}
 </style>
 </head>
 <body>
@@ -481,8 +514,8 @@ th{background:var(--surface-2);color:var(--ink-2)}
 </section>
 
 <!-- ======================= WORKFLOW DIAGRAM ============================ -->
-<section>
-  <h2>Workflow</h2>
+<section class="ticketSection">
+  <div class="sectionKicker">04 / THE PLAYBOOK</div><h2>From scoreboard to space</h2>
   <!-- >>> AI-AGENT EDIT ZONE: WORKFLOW >>>
        Page 1 of Diagram Blank.ai, made live. Hovering a box lists what is
        actually moving through it right now; the travelling pips are throttled
@@ -496,8 +529,8 @@ th{background:var(--surface-2);color:var(--ink-2)}
 </section>
 
 <!-- ======================= EXPORT ====================================== -->
-<section>
-  <h2>JSON out</h2>
+<section class="ticketSection">
+  <div class="sectionKicker">05 / DESIGN HANDOFF</div><h2>Take the room into Rhino</h2>
   <div class="row" style="margin-bottom:10px">
     <button class="btn" id="copyPlaceBtn">Copy placement for Claude</button>
     <button class="btn" id="exportBtn">Write JSON to exports/</button>
@@ -514,8 +547,18 @@ th{background:var(--surface-2);color:var(--ink-2)}
 
 <!-- ======================= STATEMENT =================================== -->
 <!-- >>> AI-AGENT EDIT ZONE: STATEMENT >>> -->
+<section class="teamFieldSection">
+  <div class="sectionKicker">06 / THE TEAM TERRITORIES</div><h2>Three teams share one atmosphere</h2>
+  <p class="sub">Each team occupies one bay. Air and humidity move through the shared room, while the six fixed lights define its zones.</p>
+  <div class="teamField" aria-label="Conceptual room plan: Tennessee left, Georgia center, Alabama right">
+    <div class="fieldBay" data-team="1"><span class="fieldSectionNumber">01</span><strong>TENNESSEE</strong><span>HEAT PUMP / HUMIDIFIER / FAN</span><div class="lightPair">FRONT LIGHT 1 <b>＋</b> BACK LIGHT 4</div></div>
+    <div class="fieldBay" data-team="2"><span class="fieldSectionNumber">02</span><strong>GEORGIA</strong><span>HEAT PUMP / HUMIDIFIER / FAN</span><div class="lightPair">FRONT LIGHT 2 <b>＋</b> BACK LIGHT 5</div></div>
+    <div class="fieldBay" data-team="3"><span class="fieldSectionNumber">03</span><strong>ALABAMA</strong><span>HEAT PUMP / HUMIDIFIER / FAN</span><div class="lightPair">FRONT LIGHT 3 <b>＋</b> BACK LIGHT 6</div></div>
+  </div><div class="note">Conceptual bay diagram. Use the interactive Gallery above to see or change actual equipment positions.</div>
+</section>
+<div class="stadiumDivider" aria-hidden="true"><span>3 TEAMS</span><span>9 MECHANICAL SYSTEMS</span><span>6 LIGHTS</span></div>
 <section class="statement" id="statement">
-  <h2>Artist Statement</h2>
+  <div class="sectionKicker">07 / RESEARCH THROUGH DESIGN</div><h2>Artist Statement</h2>
   <p>My thesis work is concerned with stadiums and college sports. I chose to work with college
   football statistics because they offered a way to study the events that give these spaces
   meaning: scoring, competition, momentum, and the differences between teams. Rather than
@@ -1188,6 +1231,15 @@ function drawSpark(cv, series, lo, hi, unit){
   cv._series = series; cv._unit = unit; cv._X = X;
 }
 
+/* Team badges are original jersey graphics, with readable team labels. */
+function teamBadge(i, small=false){
+  const labels = {1:"UT",2:"UGA",3:"BAMA"};
+  return `<span class="teamBadge ${small ? 'mini' : ''}" data-team="${i}" aria-hidden="true">
+    <svg viewBox="0 0 90 90" fill="none"><path d="M29 12L12 21L4 42L20 49L26 37V78H64V37L70 49L86 42L78 21L61 12C57 22 33 22 29 12Z" fill="currentColor"/>
+    <path d="M35 12C38 21 52 21 55 12M29 26V65M61 26V65" stroke="white" stroke-opacity=".35" stroke-width="2"/>
+    <text x="45" y="51" fill="white" text-anchor="middle" font-family="Arial,sans-serif" font-weight="900" font-size="${i===3?14:19}">${labels[i] || i}</text></svg></span>`;
+}
+
 /* ---------- systems row ---------- */
 function buildSystemsRow(){
   const row = $("#systemsRow"); row.innerHTML = "";
@@ -1242,7 +1294,7 @@ function updateSystemsRow(){
         const out = type==="heat_pump" ? `${fmt(s.output/1000,2)} kW`
                   : type==="humidifier" ? `${fmt(s.output*1000,3)} g/s`
                   : `${fmt(s.output,2)} m/s`;
-        return `<div><b>${s.label}</b> &middot; ${fmt(s.reading,1)}${FIELD_UNIT[field]}
+        return `<div class="teamReadout" data-team="${s.id.split("_")[1]}">${teamBadge(Number(s.id.split("_")[1]),true)}<b>${s.label}</b> &middot; ${fmt(s.reading,1)}${FIELD_UNIT[field]}
           &middot; ${out}</div>
           <div class="tag"><span class="dot ${s.rule_true?"on":""}"></span>
           ${s.rule ? (s.rule_true ? "rule true" : "rule false")
@@ -1592,13 +1644,13 @@ function buildMappings(){
     const test = r.op === "between" ? `between ${r.value} and ${r.value2}` : `${r.op} ${r.value}`;
     const suffix = units[type];
     return `<article class="mappingCard" data-team="${i}"><div class="eyebrow">${team.toUpperCase()} / ${metric.toUpperCase()}</div>
-      <h3>${names[type]}</h3><p>${meaning[type]} If ${metric} is ${test}, the target is
+      <div class="cardTeamBadge">${teamBadge(i,true)}</div><h3>${names[type]}</h3><p>${meaning[type]} If ${metric} is ${test}, the target is
       <b>${r.then}${suffix}</b>; otherwise <b>${r.otherwise}${suffix}</b>.</p>
       <div class="live" data-feed="${r.api}">Selected game: waiting</div></article>`;
   }).join("");
   $("#teamBoard").innerHTML = [1,2,3].map(i => {
     const team = (labels[`team_${i}_points`] || `Team ${i}`).split(" latest game:")[0];
-    return `<div class="boardTeam"><div class="boardTeamName">0${i} / ${team.toUpperCase()}</div>
+    return `<div class="boardTeam" data-team="${i}"><div class="boardIdentity">${teamBadge(i)}<div class="boardTeamName">SECTION 0${i}<strong>${team.toUpperCase()}</strong></div></div>
       <div class="boardNumbers"><span data-board="team_${i}_points">--</span><small>PTS</small>
       <span data-board="team_${i}_margin">--</span><small>MARGIN</small></div></div>`;
   }).join("");
