@@ -9,7 +9,7 @@
 ================================================================================
  AI-AGENT ORIENTATION  -  READ THIS FIRST
 ================================================================================
- IARC 425 / Reading Big Data at the Human Scale. This is the "Website" box of
+ ARCH 425 / Reading Big Data at the Human Scale. This is the "Website" box of
  the workflow diagram. It is a DUMB TERMINAL: it draws what app.py sends and
  posts the student's edits back. No physics happens here.
 
@@ -329,7 +329,7 @@ th{background:var(--surface-2);color:var(--ink-2)}
 <section class="stadiumHero" aria-label="Night stadium introduction">
   <div class="heroShade"></div>
   <div class="heroContent">
-    <div class="eyebrow">IARC 425 / READING BIG DATA AT THE HUMAN SCALE</div>
+    <div class="eyebrow">ARCH 425 / READING BIG DATA AT THE HUMAN SCALE</div>
     <div class="heroDisplay"><span>GAME DAY</span><strong>CLIMATE</strong></div>
     <p>Three teams. Fifteen systems. One room shaped by the scoreboard.</p>
     <a class="enterBtn" href="#field">ENTER THE STADIUM <span aria-hidden="true">↗</span></a>
@@ -375,6 +375,8 @@ th{background:var(--surface-2);color:var(--ink-2)}
   <div class="boardHead"><span>THE THREE-TEAM BOARD</span><span id="boardModeLabel">REGULAR-SEASON RESULTS</span></div>
   <div class="replayControls"><div><label for="playbackMode">DATA MODE</label>
 <select id="playbackMode"><option value="latest">Latest completed games</option><option value="replay">Season replay · 12 seconds per week</option></select></div>
+<div><label for="weekSelect">COMPLETED WEEK</label><select id="weekSelect" disabled><option value="">Loading weeks…</option></select></div>
+<button class="btn" id="resumeReplay">Resume replay</button><button class="btn" id="pauseReplay">Pause replay</button>
 <button class="btn" id="restartReplay">Restart replay</button><span id="playbackStatus" role="status">Loading football data…</span></div>
 <div class="boardGrid" id="teamBoard"></div>
   <div class="boardFoot">POINTS → TEMPERATURE + FRONT LIGHTS &nbsp; / &nbsp; MARGIN → AIRFLOW + HUMIDITY + BACK LIGHTS</div>
@@ -738,29 +740,28 @@ function boxFaces(W, D, H){
    System glyphs, redrawn from page 3 of Diagram Blank.ai. Pure line art in
    --ink: identity here is SHAPE, never colour. */
 const GLYPH = {
-heat_pump:`<svg viewBox="0 0 120 100" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round">
-<rect x="8" y="12" width="84" height="60" rx="5"/><path d="M92 18l10 8v40l-10 8"/>
-<circle cx="42" cy="42" r="23"/><circle cx="42" cy="42" r="5" fill="currentColor"/>
-<path d="M42 19v46M19 42h46M26 26l32 32M58 26L26 58" stroke-width="3.5"/>
-<rect x="66" y="22" width="18" height="9" rx="2"/><rect x="66" y="37" width="18" height="9" rx="2"/>
-<rect x="66" y="52" width="18" height="9" rx="2"/>
-<path d="M16 72v10M84 72v10M6 82h94" stroke-linecap="round"/></svg>`,
-humidifier:`<svg viewBox="0 0 120 100" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round">
-<path d="M36 14h48v4h6v62h-6v6H36v-6h-6V18h6z"/>
-<path d="M42 26h36M42 36h36M42 46h36" stroke-width="4"/>
-<circle cx="60" cy="64" r="13"/><path d="M51 73l18-18" stroke-width="4"/>
-<path d="M60 54c-4 5-6 8-6 11a6 6 0 0012 0c0-3-2-6-6-11z" stroke-width="3.5"/>
-<path d="M40 88h40" stroke-linecap="round"/></svg>`,
-fan:`<svg viewBox="0 0 120 100" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round">
-<rect x="14" y="8" width="80" height="74" rx="4"/><circle cx="54" cy="45" r="30"/>
-<path d="M54 45c0-14 4-22 12-22s12 7 8 16-12 8-20 6z"/>
-<path d="M54 45c12 7 15 15 11 22s-13 6-17-3 1-14 6-19z"/>
-<path d="M54 45c-12-7-20-6-24 1s1 13 11 13 11-8 13-14z"/>
-<circle cx="54" cy="45" r="6" fill="currentColor" stroke="none"/>
-<path d="M24 82v8h8v-8M76 82v8h8v-8" stroke-linecap="round"/></svg>`,
-can_light:`<svg viewBox="0 0 120 100" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
-<path d="M30 20h60"/><path d="M40 20v10h40V20"/><rect x="48" y="30" width="24" height="18" rx="3"/>
-<path d="M40 64l6-8M60 68v-10M80 64l-6-8"/></svg>`
+heat_pump:`<svg viewBox="0 0 120 100" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Football with heat waves">
+<path d="M16 69C20 39 49 21 88 29C85 58 54 81 16 69Z"/>
+<path d="M27 44L39 67M66 29L78 52M40 53L65 39M43 45L48 54M51 40L56 49M59 35L64 44"/>
+<path d="M87 14c-8 7 6 9-1 16M99 25c-8 7 6 9-1 16M105 46c-8 7 6 9-1 16"/>
+</svg>`,
+humidifier:`<svg viewBox="0 0 120 100" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Football helmet with humidity droplet">
+<path d="M16 61V48C16 26 31 15 52 15C76 15 87 29 87 52H65V68H38L27 60Z"/>
+<path d="M66 43H92V62H68M78 52V76H51M68 68H92M40 68L38 79H17"/>
+<circle cx="50" cy="50" r="7"/>
+<path d="M104 17c-5 7-9 12-9 17a9 9 0 0018 0c0-5-4-10-9-17Z"/>
+</svg>`,
+fan:`<svg viewBox="0 0 120 100" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Football playbook routes showing movement">
+<rect x="12" y="12" width="96" height="76" rx="3"/>
+<path d="M23 69L33 79M33 69L23 79M51 69L61 79M61 69L51 79"/>
+<circle cx="84" cy="74" r="6"/>
+<path d="M28 59V33H48M40 25L48 33L40 41M56 59V23M48 31L56 23L64 31M84 59V47L98 33M86 33H98V45"/>
+</svg>`,
+can_light:`<svg viewBox="0 0 120 100" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Stadium floodlight tower">
+<rect x="20" y="12" width="80" height="32" rx="3"/>
+<path d="M40 12V44M60 12V44M80 12V44M20 28H100M53 44V86M67 44V86M45 87H75M53 58H67M53 73H67"/>
+<path d="M26 55L19 65M92 55L99 65M37 54L32 63M82 54L87 63"/>
+</svg>`
 };
 const TYPE_NAME = { heat_pump:"Heat pump", humidifier:"Humidifier / dehumidifier",
                     fan:"Fan", can_light:"Can lights" };
@@ -1628,15 +1629,26 @@ async function poll(){
     const playback = S.frame.playback;
     if(playback){
       $("#playbackMode").value = playback.mode;
+      const weekSelect = $("#weekSelect");
+      const weekSignature = playback.weeks.join(",");
+      if(weekSelect.dataset.weeks !== weekSignature){
+        weekSelect.dataset.weeks = weekSignature;
+        weekSelect.innerHTML = '<option value="">Choose a week…</option>' + playback.weeks.map(w => `<option value="${w}">Week ${w}</option>`).join("");
+      }
+      weekSelect.disabled = !playback.weeks.length;
+      weekSelect.value = playback.mode === "replay" ? (playback.week ?? "") : "";
+      $("#resumeReplay").disabled = !playback.weeks.length || (playback.mode === "replay" && !playback.paused);
+      $("#pauseReplay").disabled = playback.mode !== "replay" || playback.paused;
+
       $("#playbackStatus").textContent = playback.mode === "replay"
-        ? `${playback.season} season · Week ${playback.week ?? "waiting"} · cycles every 12 seconds`
+        ? `${playback.season} season · Week ${playback.week ?? "waiting"} · ${playback.paused ? "held on this week" : "cycles every 12 seconds"}`
         : `${playback.season} season · Latest completed games`;
       $("#boardModeLabel").textContent = playback.mode === "replay" ? "SEASON REPLAY — WEEK "+(playback.week ?? "—") : "LATEST COMPLETED REGULAR-SEASON GAMES";
       $$(".boardTeam").forEach((el,i) => {
         let caption = el.querySelector(".gameCaption");
         if(!caption){caption=document.createElement("div");caption.className="gameCaption";el.appendChild(caption);}
         const game=playback.games[playback.teams[i]];
-        caption.textContent=game ? `Week ${game.week} · vs ${game.opponent} · ${game.points}–${game.opponentPoints}` : "No completed game available";
+        caption.textContent=game ? `Week ${game.week} · vs ${game.opponent} · ${game.points}–${game.opponentPoints}${playback.mode === "replay" && Number(game.week) < playback.week ? " · carried forward (bye / no completed result)" : ""}` : "No completed game available";
       });
     }
     applyPending(S.frame);
@@ -1668,6 +1680,11 @@ async function boot(){
   buildSystemsRow();
   buildMappings();
   $("#playbackMode").addEventListener("change", e => jpost("/api/playback", {mode:e.target.value}));
+  $("#weekSelect").addEventListener("change", e => {
+    if(e.target.value) jpost("/api/playback", {mode:"replay", action:"select", week:Number(e.target.value)});
+  });
+  $("#resumeReplay").addEventListener("click", () => jpost("/api/playback", {mode:"replay", action:"resume"}));
+  $("#pauseReplay").addEventListener("click", () => jpost("/api/playback", {mode:"replay", action:"pause"}));
   $("#restartReplay").addEventListener("click", () => jpost("/api/playback", {mode:"replay"}));
   buildFlow();
   initInteraction();
